@@ -7,7 +7,7 @@ const catalog = [
 
 let cart = [];
 
-// Display products
+
 function displayCatalog() {
   console.log("Available Spare Parts:");
   catalog.forEach(product => {
@@ -15,7 +15,6 @@ function displayCatalog() {
   });
 }
 
-// Add product to cart
 function addToCart(productId) {
   const product = catalog.find(p => p.id === productId);
   if (product) {
@@ -26,7 +25,7 @@ function addToCart(productId) {
   }
 }
 
-// Show cart contents
+
 function showCart() {
   if (cart.length === 0) {
     console.log("Your cart is empty.");
@@ -40,8 +39,8 @@ function showCart() {
   console.log(`Total: ₹${total}`);
 }
 
-// Example usage:
+
 displayCatalog();
-addToCart(1); // Add Button Pack
-addToCart(3); // Add Cuff
+addToCart(1); 
+addToCart(3); 
 showCart();
