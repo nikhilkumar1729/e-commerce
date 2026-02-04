@@ -1,0 +1,5 @@
+POST /orders
+{
+  "product_id": 1,
+  "quantity": 2
+}
