@@ -1,0 +1,38 @@
+// App.tsx
+import React, { useState } from "react";
+import { products } from "./products";
+import { Product } from "./types";
+
+const App: React.FC = () => {
+  const [cart, setCart] = useState<Product[]>([]);
+
+  const addToCart = (product: Product) => {
+    setCart([...cart, product]);
+  };
+
+  const total = cart.reduce((sum, item) => sum + item.price, 0);
+
+  return (
+    <div style={{ padding: "20px" }}>
+      <h1>E-Commerce Store</h1>
+
+      <div style={{ display: "flex", gap: "20px" }}>
+        {products.map((product) => (
+          <div key={product.id} style={{ border: "1px solid #ccc", padding: "10px" }}>
+            <img src={product.image} alt={product.name} />
+            <h3>{product.name}</h3>
+            <p>${product.price}</p>
+            <button onClick={() => addToCart(product)}>Add to Cart</button>
+          </div>
+        ))}
+      </div>
+
+      <hr />
+
+      <h2>Cart ({cart.length} items)</h2>
+      <p>Total: ${total}</p>
+    </div>
+  );
+};
+
+export default App;
