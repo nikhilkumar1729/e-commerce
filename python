@@ -1,0 +1,78 @@
+from fastapi import FastAPI
+from pydantic import BaseModel
+import stripe
+
+# --------------------
+# APP CONFIG
+# --------------------
+app = FastAPI()
+
+stripe.api_key = "sk_test_your_key_here"
+
+# --------------------
+# MODELS
+# --------------------
+class Product(BaseModel):
+    id: int
+    name: str
+    price: int  # cents
+    stock: int
+
+class CartItem(BaseModel):
+    product_id: int
+    quantity: int
+
+class Order(BaseModel):
+    items: list[CartItem]
+
+# --------------------
+# FAKE DATABASE
+# --------------------
+products = {
+    1: {"name": "Laptop", "price": 100000, "stock": 5},
+    2: {"name": "Phone", "price": 50000, "stock": 10}
+}
+
+cart = []
+
+# --------------------
+# PRODUCT APIs
+# --------------------
+@app.get("/products")
+def get_products():
+    return products
+
+# --------------------
+# CART APIs
+# --------------------
+@app.post("/cart/add")
+def add_to_cart(item: CartItem):
+    cart.append(item)
+    return {"message": "Item added to cart"}
+
+@app.get("/cart")
+def view_cart():
+    return cart
+
+# --------------------
+# ORDER + PAYMENT
+# --------------------
+@app.post("/order")
+def create_order(order: Order):
+    total_amount = 0
+
+    for item in order.items:
+        product = products[item.product_id]
+        total_amount += product["price"] * item.quantity
+
+    payment = stripe.PaymentIntent.create(
+        amount=total_amount,
+        currency="usd",
+        payment_method_types=["card"]
+    )
+
+    return {
+        "message": "Order created",
+        "total_amount": total_amount,
+        "payment_client_secret": payment.client_secret
+    }
